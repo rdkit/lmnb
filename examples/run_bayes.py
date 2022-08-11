@@ -25,7 +25,7 @@ def get_fp(smiles: str) -> list:
     if not fp:
         return
 
-    return fp.GetNonzeroElements()
+    return set(fp.GetNonzeroElements().keys())
 
 
 def setup_logger():
