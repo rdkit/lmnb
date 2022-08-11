@@ -14,7 +14,7 @@ def test_bayes():
     Y = np.array([1, 2, 3, 4, 4, 5])
     Xlist = []
     for i in arr:
-        Xlist.append(dict.fromkeys(i.nonzero()[0], 1))
+        Xlist.append(set(i.nonzero()[0]))
     X = np.array(Xlist)
     clf.fit(X, Y)
 
@@ -27,15 +27,15 @@ def test_lmnb_prior_unobserved_targets():
     # test smoothing of prior for yet unobserved targets
 
     # Create toy training data
-    X = np.array([{1: 1}, {0: 1}])
+    X = np.array([{1}, {0}])
     y = np.array([0, 1])
 
     clf = LaplacianNB()
     clf.fit(X, y)
 
-    assert_array_equal(clf.predict(np.array([{1: 1}])), np.array([0]))
-    assert_array_equal(clf.predict(np.array([{0: 1}])), np.array([1]))
-    assert_array_equal(clf.predict(np.array([{0: 1, 1: 1}])), np.array([0]))
+    assert_array_equal(clf.predict(np.array([{1}])), np.array([0]))
+    assert_array_equal(clf.predict(np.array([{0}])), np.array([1]))
+    assert_array_equal(clf.predict(np.array([{0, 1}])), np.array([0]))
 
 
 def test_rdkit():
@@ -56,7 +56,7 @@ def test_rdkit():
 
         mol = Chem.MolFromSmiles(smiles)
         fp = AllChem.GetMorganFingerprint(mol, 2)
-        return fp.GetNonzeroElements()
+        return set(fp.GetNonzeroElements().keys())
 
     DATA_PATH = Path(__file__).parent.parent.joinpath("tests/data/")
     file = str(DATA_PATH.joinpath("smiles_test.csv"))
