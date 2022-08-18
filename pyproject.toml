@@ -1,0 +1,83 @@
+[build-system]
+requires = ["hatchling>=1.4.1"]
+build-backend = "hatchling.build"
+
+[project]
+name = "laplaciannb"
+description = 'TBD'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Baranowski, Bartosz", email = "bartosz.baranowski@novartis.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+  "pandas>=1.4.2",
+  "numpy>=1.22.4",
+  "scikit-learn>=1.1.1",
+  "scipy>=1.8.1",]
+dynamic = ["version"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/.git",
+]
+
+[tool.hatch.build.targets.wheel]
+
+[project.urls]
+Documentation = "https://github.com/unknown/laplaciannb#readme"
+Issues = "https://github.com/unknown/laplaciannb/issues"
+Source = "https://github.com/unknown/laplaciannb"
+
+[tool.hatch.version]
+path = "bayes/__about__.py"
+
+[tool.mypy]
+disallow_untyped_defs = false
+follow_imports = "normal"
+ignore_missing_imports = true
+pretty = true
+show_column_numbers = true
+warn_no_return = false
+warn_unused_ignores = true
+
+[tool.bandit]
+recursive = true
+skip = ["B101", "B102", "B105", "B110", "B112", "B301", "B307", "B324", "B403", "B404", "B603", "B604", "B606", "B607"]
+
+[tool.black]
+include = '\.pyi?$'
+line-length = 120
+skip-string-normalization = true
+target-version = ["py38"]
+
+[tool.isort]
+default_section = "THIRDPARTY"
+force_grid_wrap = 0
+include_trailing_comma = true
+known_first_party = ["hatch", "hatchling"]
+line_length = 120
+multi_line_output = 3
+use_parentheses = true
+
+[tool.coverage.run]
+branch = true
+omit = [
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
