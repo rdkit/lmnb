@@ -1,10 +1,11 @@
-import pandas as pd
-from bayes.LaplacianNB import LaplacianNB
+from pathlib import Path
 
 # from bayes.bayes import get_fp
 import numpy as np
+import pandas as pd
 from numpy.testing import assert_array_equal
-from pathlib import Path
+
+from bayes.LaplacianNB import LaplacianNB
 
 
 def test_bayes():
@@ -41,6 +42,7 @@ def test_lmnb_prior_unobserved_targets():
 def test_rdkit():
     from rdkit import Chem
     from rdkit.Chem import AllChem
+
     from bayes.LaplacianNB import LaplacianNB
 
     def get_fp(smiles: str) -> dict:
@@ -58,14 +60,14 @@ def test_rdkit():
         fp = AllChem.GetMorganFingerprint(mol, 2)
         return set(fp.GetNonzeroElements().keys())
 
-    DATA_PATH = Path(__file__).parent.parent.joinpath("tests/data/")
-    file = str(DATA_PATH.joinpath("smiles_test.csv"))
+    DATA_PATH = Path(__file__).parent.parent.joinpath('tests/data/')
+    file = str(DATA_PATH.joinpath('smiles_test.csv'))
     df = pd.read_csv(file)
-    df["dicts"] = df["smiles"].apply(
+    df['dicts'] = df['smiles'].apply(
         lambda x: get_fp(x),
     )
-    X = df["dicts"]
-    y = df["activity"]
+    X = df['dicts']
+    y = df['activity']
     clf = LaplacianNB()
     clf.fit(X, y)
 

@@ -1,12 +1,12 @@
-from sklearn.naive_bayes import _BaseDiscreteNB
-from sklearn.preprocessing import binarize
-from sklearn.preprocessing import LabelBinarizer
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.utils.validation import _check_sample_weight
-from scipy.special import logsumexp
+from functools import reduce
 from itertools import compress
-from .utils import _sum_sets
+
 import numpy as np
+from scipy.special import logsumexp
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.naive_bayes import _BaseDiscreteNB
+from sklearn.preprocessing import LabelBinarizer, binarize
+from sklearn.utils.validation import _check_sample_weight
 
 
 class LaplacianNB(_BaseDiscreteNB):
@@ -110,6 +110,14 @@ class LaplacianNB(_BaseDiscreteNB):
             X = binarize(X, threshold=self.binarize)
         return X, y
 
+    def _sum_sets(self, set_list):
+        def reducer(accumulator, element):
+            for key in element:
+                accumulator[key] = accumulator.get(key, 0) + 1
+            return accumulator
+
+        return reduce(reducer, set_list, {})
+
     def _count_feature_count(self, X, Y):
         """Function to calculate how many times feature is happening for a specific class.
 
@@ -118,11 +126,11 @@ class LaplacianNB(_BaseDiscreteNB):
         """
         feature_sum = np.zeros(len(self.classes_))
         feature_dict = []
-        all_feature_dict = dict(sorted(_sum_sets(X).items()))
+        all_feature_dict = dict(sorted(self._sum_sets(X).items()))
 
         for i, row in enumerate(Y.T):
             compressed = list(compress(X, row))
-            tmp_dict_sum = _sum_sets(compressed)
+            tmp_dict_sum = self._sum_sets(compressed)
             feature_dict.append(dict(sorted(tmp_dict_sum.items())))
             feature_sum[i] = sum(tmp_dict_sum.values())
 
@@ -148,12 +156,10 @@ class LaplacianNB(_BaseDiscreteNB):
         total = dictvectorizer.fit_transform(self.feature_count_all_dict_)
         classc = dictvectorizer.fit_transform(self.feature_count_dict_)
         self.feature_names_ = [int(i) for i in dictvectorizer.get_feature_names_out()]
-        self.feature_names_ = dict(
-            zip(self.feature_names_, range(len(self.feature_names_)))
-        )
+        self.feature_names_ = dict(zip(self.feature_names_, range(len(self.feature_names_))))
         prior = self.feature_count_ / self.feature_all_
         self.feature_prob_ = (classc + alpha) / (np.outer(prior, total) + alpha)
-        self.feature_log_prob_ = np.log(self.feature_prob_).astype("float32")
+        self.feature_log_prob_ = np.log(self.feature_prob_).astype('float32')
 
     def _joint_log_likelihood(self, X):
         """Calculate the posterior log probability of the samples X"""
