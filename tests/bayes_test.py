@@ -45,7 +45,7 @@ def test_rdkit():
 
     from bayes.LaplacianNB import LaplacianNB
 
-    def get_fp(smiles: str) -> dict:
+    def get_fp(smiles: str) -> set:
         """Function to calculate MorganFingerprint from smiles.
         It returns index of all '1' bits of not-folded fingerprint.
 
@@ -53,7 +53,7 @@ def test_rdkit():
             smiles (str): smiles string
 
         Returns:
-            dict: return dict of index of '1' bits.
+            set: return set of index of '1' bits.
         """
 
         mol = Chem.MolFromSmiles(smiles)

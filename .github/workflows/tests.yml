@@ -35,25 +35,11 @@ jobs:
       run: |
         pip install -e .
 
-    - if: matrix.python-version == '3.8' && runner.os == 'Linux'
-      name: Lint
-      run: hatch run lint:all
+    - name: Install Hatch
+      run: pip install --upgrade --pre hatch
 
+    - name: Run lint
+      run: hatch run lint:all
+    
     - name: Run tests
       run: hatch run full
-
-  downstream:
-    name: Downstream builds with Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
