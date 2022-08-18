@@ -1,6 +1,7 @@
 [envs.default]
 dependencies = [
   "coverage[toml]>=6.2",
+  "hatchling",
   "filelock>=3.7.1",
   "pytest",
   "pytest-cov",
@@ -11,9 +12,7 @@ dependencies = [
   "trustme",
   "rdkit"
 ]
-post-install-commands = [
-  "python -m pip install --disable-pip-version-check {verbosity:flag:-1} -e ./backend",
-]
+
 [envs.default.scripts]
 full = "pytest -n auto --reruns 5 --reruns-delay 3 -r aR --cov-report=term-missing --cov-config=pyproject.toml --cov=bayes/ --cov=tests {args:tests}"
 dev = "pytest -p no:randomly --no-cov {args:tests}"

@@ -18,9 +18,6 @@ classifiers = [
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
   "pandas>=1.4.2",
@@ -62,7 +59,7 @@ skip = ["B101", "B102", "B105", "B110", "B112", "B301", "B307", "B324", "B403", 
 include = '\.pyi?$'
 line-length = 120
 skip-string-normalization = true
-target-version = ["py37"]
+target-version = ["py38"]
 
 [tool.isort]
 default_section = "THIRDPARTY"
