@@ -5,7 +5,7 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.utils.validation import _check_sample_weight
 from scipy.special import logsumexp
 from itertools import compress
-from .utils import _sum_dicts
+from .utils import _sum_sets
 import numpy as np
 
 
@@ -79,7 +79,7 @@ class LaplacianNB(_BaseDiscreteNB):
     >>> Y = np.array([1, 2, 3, 4, 4, 5])
     >>> Xlist = []
     >>> for i in arr:
-    >>>     Xlist.append(dict.fromkeys(i.nonzero()[0],1))
+    >>>     Xlist.append(set(i.nonzero()[0]))
     >>> X = np.array(Xlist)
     >>> from bayes.LaplacianNB import LaplacianNB
     >>> clf = LaplacianNB()
@@ -118,11 +118,11 @@ class LaplacianNB(_BaseDiscreteNB):
         """
         feature_sum = np.zeros(len(self.classes_))
         feature_dict = []
-        all_feature_dict = dict(sorted(_sum_dicts(X).items()))
+        all_feature_dict = dict(sorted(_sum_sets(X).items()))
 
         for i, row in enumerate(Y.T):
             compressed = list(compress(X, row))
-            tmp_dict_sum = _sum_dicts(compressed)
+            tmp_dict_sum = _sum_sets(compressed)
             feature_dict.append(dict(sorted(tmp_dict_sum.items())))
             feature_sum[i] = sum(tmp_dict_sum.values())
 
@@ -165,7 +165,7 @@ class LaplacianNB(_BaseDiscreteNB):
             new_X = np.zeros([X.shape[0], n_features], dtype=bool)
 
         for i, row in enumerate(X):
-            np.add.at(new_X[i, :], [self.feature_names_[key] for key in row.keys()], 1)
+            np.add.at(new_X[i, :], [self.feature_names_[key] for key in row], 1)
         jll = np.dot(new_X, self.feature_log_prob_.T)
         return jll
 

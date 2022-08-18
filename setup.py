@@ -28,5 +28,5 @@ setup(
     packages=find_packages(include=["bayes", "bayes.*"]),
     test_suite="tests",
     url="",  # noqa: E501
-    version="0.6.2",
+    version="0.7",
 )

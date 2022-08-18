@@ -1,10 +1,10 @@
 from functools import reduce
 
 
-def _sum_dicts(dict_list):
+def _sum_sets(set_list):
     def reducer(accumulator, element):
-        for key, value in element.items():
+        for key in element:
             accumulator[key] = accumulator.get(key, 0) + 1
         return accumulator
 
-    return reduce(reducer, dict_list, {})
+    return reduce(reducer, set_list, {})
