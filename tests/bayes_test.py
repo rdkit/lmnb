@@ -1,10 +1,11 @@
-import pandas as pd
-from bayes.LaplacianNB import LaplacianNB
+from pathlib import Path
 
 # from bayes.bayes import get_fp
 import numpy as np
+import pandas as pd
 from numpy.testing import assert_array_equal
-from pathlib import Path
+
+from bayes.LaplacianNB import LaplacianNB
 
 
 def test_bayes():
@@ -41,6 +42,7 @@ def test_lmnb_prior_unobserved_targets():
 def test_rdkit():
     from rdkit import Chem
     from rdkit.Chem import AllChem
+
     from bayes.LaplacianNB import LaplacianNB
 
     def get_fp(smiles: str) -> dict:

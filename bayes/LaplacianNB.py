@@ -1,12 +1,13 @@
-from sklearn.naive_bayes import _BaseDiscreteNB
-from sklearn.preprocessing import binarize
-from sklearn.preprocessing import LabelBinarizer
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.utils.validation import _check_sample_weight
-from scipy.special import logsumexp
 from itertools import compress
-from .utils import _sum_sets
+
 import numpy as np
+from scipy.special import logsumexp
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.naive_bayes import _BaseDiscreteNB
+from sklearn.preprocessing import LabelBinarizer, binarize
+from sklearn.utils.validation import _check_sample_weight
+
+from .utils import _sum_sets
 
 
 class LaplacianNB(_BaseDiscreteNB):
@@ -148,9 +149,7 @@ class LaplacianNB(_BaseDiscreteNB):
         total = dictvectorizer.fit_transform(self.feature_count_all_dict_)
         classc = dictvectorizer.fit_transform(self.feature_count_dict_)
         self.feature_names_ = [int(i) for i in dictvectorizer.get_feature_names_out()]
-        self.feature_names_ = dict(
-            zip(self.feature_names_, range(len(self.feature_names_)))
-        )
+        self.feature_names_ = dict(zip(self.feature_names_, range(len(self.feature_names_))))
         prior = self.feature_count_ / self.feature_all_
         self.feature_prob_ = (classc + alpha) / (np.outer(prior, total) + alpha)
         self.feature_log_prob_ = np.log(self.feature_prob_).astype("float32")

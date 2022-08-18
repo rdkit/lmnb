@@ -1,7 +1,9 @@
-import pandas as pd
 import logging
+
+import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import AllChem
+
 from bayes.LaplacianNB import LaplacianNB
 
 
@@ -54,9 +56,7 @@ import timeit
 logger = logging.getLogger(__name__)
 logger.info("read_csv")
 
-df = pd.read_csv(
-    "tests/data/smiles_test.csv", delimiter="\t"
-)
+df = pd.read_csv("tests/data/smiles_test.csv", delimiter="\t")
 logger.info("calculate fingerprint column")
 tic = timeit.default_timer()
 df["dicts"] = df["smiles"].apply(
