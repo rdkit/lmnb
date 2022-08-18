@@ -1,5 +1,7 @@
 import logging
+import timeit
 
+import joblib
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -41,7 +43,7 @@ def setup_logger():
     ch.setLevel(logging.INFO)
 
     # create formatter
-    formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(name)s: %(message)s')
 
     # add formatter to ch
     ch.setFormatter(formatter)
@@ -51,35 +53,35 @@ def setup_logger():
 
 
 setup_logger()
-import timeit
+
 
 logger = logging.getLogger(__name__)
-logger.info("read_csv")
+logger.info('read_csv')
 
-df = pd.read_csv("tests/data/smiles_test.csv", delimiter="\t")
-logger.info("calculate fingerprint column")
+df = pd.read_csv('tests/data/smiles_test.csv', delimiter='\t')
+logger.info('calculate fingerprint column')
 tic = timeit.default_timer()
-df["dicts"] = df["smiles"].apply(
+df['dicts'] = df['smiles'].apply(
     lambda x: get_fp(x),
 )
 df.dropna(inplace=True)
-X = df["dicts"]
-Y = df["gene_id"]
-df.to_pickle("df_processed.pickle")
+X = df['dicts']
+Y = df['gene_id']
+df.to_pickle('df_processed.pickle')
 toc = timeit.default_timer()
 result_time = toc - tic
-logger.info("Fingerprint calculation took:" + str(result_time))
+logger.info('Fingerprint calculation took:' + str(result_time))
 clf = LaplacianNB()
-logger.info("fit data")
+logger.info('fit data')
 tic = timeit.default_timer()
 clf.fit(X, Y)
 toc = timeit.default_timer()
 result_time = toc - tic
-logger.info("Fitting took:" + str(result_time))
-filename = "model.sav"
+logger.info('Fitting took:' + str(result_time))
+filename = 'model.sav'
 
 # tic=timeit.default_timer()
-import joblib
+
 
 joblib.dump(clf, filename)
 
@@ -91,4 +93,4 @@ jll = clf.predict_proba(X)
 # result_time = toc - tic
 # logger.info(f"Prediction took:" + str(result_time))
 
-logger.info("Save to numpy array")
+logger.info('Save to numpy array')
