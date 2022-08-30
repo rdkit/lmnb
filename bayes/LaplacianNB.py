@@ -161,7 +161,11 @@ class LaplacianNB(_BaseDiscreteNB):
             new_X = np.zeros([X.shape[0], n_features], dtype=bool)
 
         for i, row in enumerate(X):
-            np.add.at(new_X[i, :], [self.feature_names_.get(key) for key in row], 1)
+            np.add.at(
+                new_X[i, :],
+                [self.feature_names_.get(key) for key in row if self.feature_names_.get(key) is not None],
+                1,
+            )
         jll = np.dot(new_X, self.feature_log_prob_.T)
         return jll
 
