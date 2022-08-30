@@ -5,8 +5,8 @@ import numpy as np
 from scipy.special import logsumexp
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.naive_bayes import _BaseDiscreteNB
-from sklearn.preprocessing import LabelBinarizer, binarize
-from sklearn.utils.validation import _check_sample_weight
+from sklearn.preprocessing import LabelBinarizer
+from sklearn.utils.validation import _check_sample_weight, check_is_fitted
 
 
 class LaplacianNB(_BaseDiscreteNB):
@@ -19,9 +19,6 @@ class LaplacianNB(_BaseDiscreteNB):
     alpha : float, default=1.0
         Additive (Laplace/Lidstone) smoothing parameter
         (0 for no smoothing).
-    binarize : float or None, default=0.0
-        Threshold for binarizing (mapping to booleans) of sample features.
-        If None, input is presumed to already consist of binary vectors.
     fit_prior : bool, default=True
         Whether to learn class prior probabilities or not.
         If false, a uniform prior will be used.
@@ -89,25 +86,18 @@ class LaplacianNB(_BaseDiscreteNB):
     [3]
     """
 
-    def __init__(self, *, alpha=1.0, binarize=0.0, fit_prior=True, class_prior=None):
+    def __init__(self, *, alpha=1.0, fit_prior=True, class_prior=None):
         self.alpha = alpha
-        self.binarize = binarize
         self.fit_prior = fit_prior
         self.class_prior = class_prior
 
-    # @TODO: for now not working, there is no check
     def _check_X(self, X):
         """Validate X, used only in predict* methods."""
-        X = super()._check_X(X)
-        if self.binarize is not None:
-            X = binarize(X, threshold=self.binarize)
+        X = super()._validate_data(X, reset=False, dtype='object', ensure_2d=False)
         return X
 
-    # @TODO: for now not working, there is no check
     def _check_X_y(self, X, y, reset=True):
-        X, y = super()._check_X_y(X, y, reset=reset)
-        if self.binarize is not None:
-            X = binarize(X, threshold=self.binarize)
+        X, y = super()._validate_data(X, y, reset=True, dtype='object', ensure_2d=False)
         return X, y
 
     def _sum_sets(self, set_list):
@@ -165,13 +155,13 @@ class LaplacianNB(_BaseDiscreteNB):
         """Calculate the posterior log probability of the samples X"""
         n_features = self.feature_log_prob_.shape[1]
 
-        if type(X) is dict:
+        if type(X) is set:
             new_X = np.zeros([1, n_features], dtype=bool)
         else:
             new_X = np.zeros([X.shape[0], n_features], dtype=bool)
 
         for i, row in enumerate(X):
-            np.add.at(new_X[i, :], [self.feature_names_[key] for key in row], 1)
+            np.add.at(new_X[i, :], [self.feature_names_.get(key) for key in row], 1)
         jll = np.dot(new_X, self.feature_log_prob_.T)
         return jll
 
@@ -191,8 +181,7 @@ class LaplacianNB(_BaseDiscreteNB):
         self : object
             Returns the instance itself.
         """
-        # X, y = self._check_X_y(X, y)
-        # _, n_features = X.shape
+        X, y = self._check_X_y(X, y)
 
         labelbin = LabelBinarizer()
         Y = labelbin.fit_transform(y)
@@ -238,8 +227,8 @@ class LaplacianNB(_BaseDiscreteNB):
             the model. The columns correspond to the classes in sorted
             order, as they appear in the attribute :term:`classes_`.
         """
-        # check_is_fitted(self)
-        # X = self._check_X(X)
+        check_is_fitted(self)
+        X = self._check_X(X)
         jll = self._joint_log_likelihood(X)
         # normalize by P(x) = P(f_1, ..., f_n)
         log_prob_x = logsumexp(jll, axis=1)
@@ -273,7 +262,7 @@ class LaplacianNB(_BaseDiscreteNB):
         C : ndarray of shape (n_samples,)
             Predicted target values for X.
         """
-        # check_is_fitted(self)
-        # X = self._check_X(X)
+        check_is_fitted(self)
+        X = self._check_X(X)
         jll = self._joint_log_likelihood(X)
         return self.classes_[np.argmax(jll, axis=1)]
