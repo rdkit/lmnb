@@ -63,10 +63,10 @@ def test_rdkit():
     DATA_PATH = Path(__file__).parent.parent.joinpath('tests/data/')
     file = str(DATA_PATH.joinpath('smiles_test.csv'))
     df = pd.read_csv(file)
-    df['dicts'] = df['smiles'].apply(
+    df['sets'] = df['smiles'].apply(
         lambda x: get_fp(x),
     )
-    X = df['dicts']
+    X = df['sets']
     y = df['activity']
     clf = LaplacianNB()
     clf.fit(X, y)
@@ -74,3 +74,45 @@ def test_rdkit():
     assert_array_equal(clf.feature_count_, [42727.0, 46838.0])
     assert_array_equal(clf.class_count_, [1000.0, 1000.0])
     assert clf.feature_all_ == 89565
+
+
+def test_joint_log_likelihood():
+
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+
+    from bayes.LaplacianNB import LaplacianNB
+
+    def get_fp(smiles: str) -> set:
+        """Function to calculate MorganFingerprint from smiles.
+        It returns index of all '1' bits of not-folded fingerprint.
+
+        Args:
+            smiles (str): smiles string
+
+        Returns:
+            set: return set of index of '1' bits.
+        """
+
+        mol = Chem.MolFromSmiles(smiles)
+        fp = AllChem.GetMorganFingerprint(mol, 2)
+        return set(fp.GetNonzeroElements().keys())
+
+    DATA_PATH = Path(__file__).parent.parent.joinpath('tests/data/')
+    file = str(DATA_PATH.joinpath('smiles_test.csv'))
+    df = pd.read_csv(file)
+    df['sets'] = df['smiles'].apply(
+        lambda x: get_fp(x),
+    )
+    X = df['sets']
+    y = df['activity']
+    clf = LaplacianNB()
+    clf.fit(X, y)
+
+    # check if algorithm can predict if index is out of range of fitted ones
+    new_df = pd.DataFrame({'sets': [{10210210310210}]})
+    new_X = new_df['sets']
+    try:
+        clf._joint_log_likelihood(new_X)
+    except Exception as exc:
+        raise AssertionError(f"'_joint_log_likelihood' raised an exception {exc}")
