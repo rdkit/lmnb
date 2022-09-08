@@ -44,24 +44,22 @@ Installation
 ------------
 
 Dependencies:
-~~~~~~~~~~~~~
 
-laplaciannb requires:
-
+```
 - Python       (>= 3.8)
 - pandas       (>=1.4.2)
 - numpy        (>=1.22.4)
 - scikit-learn (>=1.1.1)
 - scipy        (>=1.8.1)
-
+```
 
 =======
 
 
-User installation
-~~~~~~~~~~~~~~~~~
+User installation:
 
 ```pip install laplaciannb```
+
 
 
 Changelog
