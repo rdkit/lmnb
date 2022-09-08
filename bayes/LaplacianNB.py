@@ -12,8 +12,8 @@ from sklearn.utils.validation import _check_sample_weight, check_is_fitted
 class LaplacianNB(_BaseDiscreteNB):
     """Naive Bayes classifier for laplacian modified models.
     Like BernoulliNB, this classifier is suitable for binary/boolean data. The
-    difference is that while BernoulliNB takes into account positive and  negative bits,
-    laplacian modified approach is using only 1's.
+    difference is that while BernoulliNB processes all features, while
+    laplacian modified approach is using only positive bits.
     Parameters
     ----------
     alpha : float, default=1.0
