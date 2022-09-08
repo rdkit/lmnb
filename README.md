@@ -16,8 +16,8 @@
 This classifier is suitable for binary/boolean data as it uses for prediction only indices of the positive bits. The algorithm was first implemented in Pipeline Pilot and KNIME.
 
 Literature:
-~~~~~~~~~~~
 
+```
 Nidhi; Glick, M.; Davies, J. W.; Jenkins, J. L. Prediction of biological targets
 for compounds using multiple-category Bayesian models trained on chemogenomics
 databases. J. Chem. Inf. Model. 2006, 46, 1124– 1133,
@@ -26,14 +26,18 @@ https://doi.org/10.1021/ci060003g
 Lam PY, Kutchukian P, Anand R, et al. Cyp1 inhibition prevents doxorubicin-induced cardiomyopathy
 in a zebrafish heart-failure model. Chem Bio Chem. 2020:cbic.201900741.
 https://doi.org/10.1002/cbic.201900741
+```
+
+=======
 
 
 Authors
 --------
 
-Huge thanks to *Florian Nigsch* (florian.nigsch@novartis.com) for the first implementation of the algorithm in python and *Peter Kutchukian* (peter.kutchukian@novartis.net) for scientific guidance and validation.
+Huge thanks to **Florian Nigsch** (florian.nigsch@novartis.com) for the first implementation of the algorithm in python and **Peter Kutchukian** (peter.kutchukian@novartis.net) for scientific guidance and validation.
 
-Author and maintainer: Bartosz Baranowski (bartosz.baranowski@novartis.com)
+
+Author and maintainer: **Bartosz Baranowski** (bartosz.baranowski@novartis.com)
 
 
 Installation
