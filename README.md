@@ -4,7 +4,7 @@
 
 | | |
 | --- | --- |
-| CI/CD | [![CI - Test](https://github.com/bbaranow/lmnb/actions/workflows/tests.yml/badge.svg)](https://github.com/bbaranow/lmnb/actions/workflows/tests.yml) [![Build - lmnb](https://github.com/bbaranow/lmnb/actions/workflows/build-lmnb.yml/badge.svg)](https://github.com/bbaranow/lmnb/actions/workflows/build-lmnb.yml) |
+| CI/CD | [![tests](https://github.com/rdkit/lmnb/actions/workflows/tests.yml/badge.svg?branch=main&event=status)](https://github.com/rdkit/lmnb/actions/workflows/tests.yml) [![Build - lmnb](https://github.com/bbaranow/lmnb/actions/workflows/build-lmnb.yml/badge.svg)](https://github.com/bbaranow/lmnb/actions/workflows/build-lmnb.yml) |
 | Package | [![PyPI - Version](https://img.shields.io/pypi/v/laplaciannb.svg?logo=pypi&label=PyPI&logoColor=gold)](https://pypi.org/project/laplaciannbs/) [![PyPI - Downloads](https://img.shields.io/pypi/dm/laplaciannb.svg?color=blue&label=Downloads&logo=pypi&logoColor=gold)](https://pypi.org/project/laplaciannb/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/laplaciannb.svg?logo=python&label=Python&logoColor=gold)](https://pypi.org/project/laplaciannb/) |
 | Meta | [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch) [![code style - black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![types - Mypy](https://img.shields.io/badge/types-Mypy-blue.svg)](https://github.com/python/mypy) [![imports - isort](https://img.shields.io/badge/imports-isort-ef8336.svg)](https://github.com/pycqa/isort) [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
