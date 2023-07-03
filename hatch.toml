@@ -10,7 +10,8 @@ dependencies = [
   "pytest-rerunfailures",
   "pytest-xdist",
   "trustme",
-  "rdkit"
+  "rdkit",
+  "pre-commit"
 ]
 
 [envs.default.scripts]
@@ -30,8 +31,8 @@ python = ["38", "39", "310"]
 detached = true
 dependencies = [
   "bandit>=1.7.4",
-  "black>=22.6.0",
-  "flake8>=5.0.0",
+  "black>=23.3.0",
+  "flake8>=6.0.0",
   "flake8-bugbear>=22.7.1",
   "flake8-quotes>=3.3.1",
   "flake8-tidy-imports>=4.8.0",
