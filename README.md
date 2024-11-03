@@ -34,27 +34,11 @@ https://doi.org/10.1002/cbic.201900741
 Authors
 --------
 
-Huge thanks to **Florian Nigsch** (florian.nigsch@novartis.com) for the first implementation of the algorithm in python and **Peter Kutchukian** (peter.kutchukian@novartis.net) for scientific guidance and validation.
-
-
 Author and maintainer: **Bartosz Baranowski** (bartosz.baranowski@novartis.com)
 
 
 Installation
 ------------
-
-Dependencies:
-
-```
-- Python       (>= 3.8)
-- pandas       (>=1.4.2)
-- numpy        (>=1.22.4)
-- scikit-learn (>=1.1.1)
-- scipy        (>=1.8.1)
-```
-
-=======
-
 
 User installation:
 
@@ -64,4 +48,5 @@ User installation:
 
 Changelog
 ---------
+`v0.6.0` - Move to pdm build
 `v0.5.0` - Initial release
