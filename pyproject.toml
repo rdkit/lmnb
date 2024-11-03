@@ -29,6 +29,7 @@ select = ["C", "E", "F", "I", "W"]
 # Ignore import violations in all `__init__.py` files.
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401", "F403", "F811"]
+"*.ipynb" = ["E402"]
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2
