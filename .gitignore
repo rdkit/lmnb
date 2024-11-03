@@ -67,3 +67,6 @@ _configtest.o.d
 
 # Used by mypy
 .mypy_cache/
+
+# Pdm
+.pdm-python
