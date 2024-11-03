@@ -96,11 +96,11 @@ class LaplacianNB(_BaseDiscreteNB):
 
     def _check_X(self, X):
         """Validate X, used only in predict* methods."""
-        X = super()._validate_data(X, reset=False, dtype='object', ensure_2d=False)
+        X = super()._validate_data(X, reset=False, dtype="object", ensure_2d=False)
         return X
 
     def _check_X_y(self, X, y, reset=True):
-        X, y = super()._validate_data(X, y, reset=True, dtype='object', ensure_2d=False)
+        X, y = super()._validate_data(X, y, reset=True, dtype="object", ensure_2d=False)
         return X, y
 
     def _sum_sets(self, set_list):
@@ -152,7 +152,7 @@ class LaplacianNB(_BaseDiscreteNB):
         self.feature_names_ = dict(zip(self.feature_names_, range(len(self.feature_names_))))
         prior = self.feature_count_ / self.feature_all_
         self.feature_prob_ = (classc + alpha) / (np.outer(prior, total) + alpha)
-        self.feature_log_prob_ = np.log(self.feature_prob_).astype('float32')
+        self.feature_log_prob_ = np.log(self.feature_prob_).astype("float32")
 
     def _joint_log_likelihood(self, X):
         """Calculate the posterior log probability of the samples X"""

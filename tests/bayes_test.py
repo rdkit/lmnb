@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from numpy.testing import assert_array_equal
 
-from bayes.LaplacianNB import LaplacianNB
+from laplaciannb.LaplacianNB import LaplacianNB
 
 
 def test_bayes():
@@ -43,7 +43,7 @@ def test_rdkit():
     from rdkit import Chem
     from rdkit.Chem import AllChem
 
-    from bayes.LaplacianNB import LaplacianNB
+    from src.laplaciannb.LaplacianNB import LaplacianNB
 
     def get_fp(smiles: str) -> set:
         """Function to calculate MorganFingerprint from smiles.
@@ -60,14 +60,14 @@ def test_rdkit():
         fp = AllChem.GetMorganFingerprint(mol, 2)
         return set(fp.GetNonzeroElements().keys())
 
-    DATA_PATH = Path(__file__).parent.parent.joinpath('tests/data/')
-    file = str(DATA_PATH.joinpath('smiles_test.csv'))
+    DATA_PATH = Path(__file__).parent.parent.joinpath("tests/data/")
+    file = str(DATA_PATH.joinpath("smiles_test.csv"))
     df = pd.read_csv(file)
-    df['sets'] = df['smiles'].apply(
+    df["sets"] = df["smiles"].apply(
         lambda x: get_fp(x),
     )
-    X = df['sets']
-    y = df['activity']
+    X = df["sets"]
+    y = df["activity"]
     clf = LaplacianNB()
     clf.fit(X, y)
 
@@ -77,11 +77,10 @@ def test_rdkit():
 
 
 def test_joint_log_likelihood():
-
     from rdkit import Chem
     from rdkit.Chem import AllChem
 
-    from bayes.LaplacianNB import LaplacianNB
+    from src.laplaciannb.LaplacianNB import LaplacianNB
 
     def get_fp(smiles: str) -> set:
         """Function to calculate MorganFingerprint from smiles.
@@ -98,20 +97,20 @@ def test_joint_log_likelihood():
         fp = AllChem.GetMorganFingerprint(mol, 2)
         return set(fp.GetNonzeroElements().keys())
 
-    DATA_PATH = Path(__file__).parent.parent.joinpath('tests/data/')
-    file = str(DATA_PATH.joinpath('smiles_test.csv'))
+    DATA_PATH = Path(__file__).parent.parent.joinpath("tests/data/")
+    file = str(DATA_PATH.joinpath("smiles_test.csv"))
     df = pd.read_csv(file)
-    df['sets'] = df['smiles'].apply(
+    df["sets"] = df["smiles"].apply(
         lambda x: get_fp(x),
     )
-    X = df['sets']
-    y = df['activity']
+    X = df["sets"]
+    y = df["activity"]
     clf = LaplacianNB()
     clf.fit(X, y)
 
     # check if algorithm can predict if index is out of range of fitted ones
-    new_df = pd.DataFrame({'sets': [{10210210310210}]})
-    new_X = new_df['sets']
+    new_df = pd.DataFrame({"sets": [{10210210310210}]})
+    new_X = new_df["sets"]
     try:
         clf._joint_log_likelihood(new_X)
     except Exception as exc:
