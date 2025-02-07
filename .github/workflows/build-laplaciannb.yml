@@ -27,16 +27,20 @@ jobs:
       # Step 3: Install pdm
       - name: Install pdm
         run: python3 -m pip install --upgrade pip pdm
-      
-      # Step 4: Build a binary wheel and a source tarball
+
+      # Step 4: Install Twine
+      - name: Install Twine
+        run: python3 -m pip install --upgrade pip pdm
+
+      # Step 5: Build a binary wheel and a source tarball
       - name: Build a binary wheel and a source tarball
         run: pdm build
 
-      # Step 5: Validate the distribution
+      # Step 6: Validate the distribution
       - name: Validate the distribution
         run: python3 -m twine check dist/*
 
-      # Step 6: Store the distribution artifacts for later use
+      # Step 7: Store the distribution artifacts for later use
       - name: Store the distribution artifacts
         uses: actions/upload-artifact@v4
         with:
