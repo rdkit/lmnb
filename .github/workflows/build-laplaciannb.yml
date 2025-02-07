@@ -96,7 +96,7 @@ jobs:
       # Step 3: Publish distribution 📦 to TestPyPI
       - name: Publish distribution 📦 to TestPyPI
         env:
-          TEST_PYPI_TOKEN: AgENdGVzdC5weXBpLm9yZwIkNmZkZmI1MGQtYWI5Yi00OTU2LWFhYzEtNjgwZjc1MTRhZDUxAAIqWzMsIjJjZmQ5Y2YwLTg5N2UtNDcwOC1hYTQ2LWU5MmU0YzdlYjYzYiJdAAAGINBGCK5ZytnmoK-y40YK88Oy32ncULU9RzyzFn6j-ud1
+          TEST_PYPI_TOKEN: pypi-AgENdGVzdC5weXBpLm9yZwIkNmZkZmI1MGQtYWI5Yi00OTU2LWFhYzEtNjgwZjc1MTRhZDUxAAIqWzMsIjJjZmQ5Y2YwLTg5N2UtNDcwOC1hYTQ2LWU5MmU0YzdlYjYzYiJdAAAGINBGCK5ZytnmoK-y40YK88Oy32ncULU9RzyzFn6j-ud1
         run: python3 -m twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
       
       # Step 3: Validate after publishing to TestPyPI
