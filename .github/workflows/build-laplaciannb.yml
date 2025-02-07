@@ -1,0 +1,135 @@
+name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
+
+## from packaging tutorial: https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
+
+# Trigger the workflow on push to a tag (used for releases)
+on:
+  push:
+    tags:
+      - "v*"  # Push events to matching v*, like v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Build distribution 📦
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      
+      # Step 3: Install pdm
+      - name: Install pdm
+        run: python3 -m pip install --upgrade pip pdm
+      
+      # Step 4: Build a binary wheel and a source tarball
+      - name: Build a binary wheel and a source tarball
+        run: pdm build
+
+      # Step 5: Validate the distribution
+      - name: Validate the distribution
+        run: python3 -m twine check dist/*
+
+      # Step 6: Store the distribution artifacts for later use
+      - name: Store the distribution artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish-to-pypi:
+    name: Publish Python 🐍 distribution 📦 to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: "! contains(github.ref_name, '-')" # Only run for stable tags (no '-' in tag name)
+    environment:
+      name: pypi
+      url: https://pypi.org/project/laplaciannb/
+    permissions:
+      id-token: write
+    steps:
+      # Step 1: Download the distribution artifacts
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      # Step 2: Publish distribution 📦 to PyPI
+      - name: Publish distribution 📦 to PyPI
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: python3 -m twine upload --non-interactive --repository-url https://upload.pypi.org/legacy/ dist/*
+  
+  publish-to-testpypi:
+    name: Publish Python 🐍 distribution 📦 to TestPyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: contains(github.ref_name, '-') # Only run for beta tags (contains '-' in tag name)
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/laplaciannb/
+    permissions:
+      id-token: write
+    steps:
+      # Step 1: Download the distribution artifacts
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      
+      # Step 2: Publish distribution 📦 to TestPyPI
+      - name: Publish distribution 📦 to TestPyPI
+        env:
+          TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: python3 -m twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
+      
+      # Step 3: Validate after publishing to TestPyPI
+      - name: Install from TestPyPI
+        run: python3 -m pip install --index-url https://test.pypi.org/simple/ laplaciannb
+  
+  github-release:
+    name: Create a GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      # Step 2: Download the distribution artifacts
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      # Step 3: Create a GitHub release
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## Chnages in this Release
+            - This is the automatically generated release notes.
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }} # Set to true for beta releases
+      
+      # Step 4: Attach the distribution artifacts to the GitHub release
+      - name: Attach the distribution artifacts to the GitHub release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/*
+          asset_name: $(basename $file)
+          asset_content_type: application/octet-stream
