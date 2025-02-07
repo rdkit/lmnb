@@ -56,7 +56,7 @@ jobs:
       name: pypi
       url: https://pypi.org/project/laplaciannb/
     permissions:
-      id-token: write
+      contents: read
     steps:
       # Step 1: Download the distribution artifacts
       - name: Download all the dists
@@ -70,7 +70,8 @@ jobs:
       # Step 3: Publish distribution 📦 to PyPI
       - name: Publish distribution 📦 to PyPI
         env:
-          PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: python3 -m twine upload --non-interactive --repository-url https://upload.pypi.org/legacy/ dist/*
   
   publish-to-testpypi:
@@ -82,7 +83,7 @@ jobs:
       name: testpypi
       url: https://test.pypi.org/project/laplaciannb/
     permissions:
-      id-token: write
+      contents: read
     steps:
       # Step 1: Download the distribution artifacts
       - name: Download all the dists
@@ -96,7 +97,8 @@ jobs:
       # Step 3: Publish distribution 📦 to TestPyPI
       - name: Publish distribution 📦 to TestPyPI
         env:
-          TEST_PYPI_TOKEN: pypi-AgENdGVzdC5weXBpLm9yZwIkNmZkZmI1MGQtYWI5Yi00OTU2LWFhYzEtNjgwZjc1MTRhZDUxAAIqWzMsIjJjZmQ5Y2YwLTg5N2UtNDcwOC1hYTQ2LWU5MmU0YzdlYjYzYiJdAAAGINBGCK5ZytnmoK-y40YK88Oy32ncULU9RzyzFn6j-ud1
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: pypi-AgENdGVzdC5weXBpLm9yZwIkNDA5YTI4NjAtMGQ2Ni00MDhjLWIyNTEtZjE0MGMwOTZkNjEzAAITWzEsWyJsYXBsYWNpYW5uYiJdXQACLFsyLFsiMDE4NmFlNGEtZDU3Zi00NGY1LWJhZTEtZWJhOTgwNzdlZDc1Il1dAAAGIEi0TXsH8htF5P2HgdXO-N66z08IdmH-WpGZLgt7gY9s
         run: python3 -m twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
       
       # Step 3: Validate after publishing to TestPyPI
