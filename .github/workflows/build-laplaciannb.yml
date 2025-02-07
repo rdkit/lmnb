@@ -99,7 +99,7 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: pypi-AgENdGVzdC5weXBpLm9yZwIkNDA5YTI4NjAtMGQ2Ni00MDhjLWIyNTEtZjE0MGMwOTZkNjEzAAITWzEsWyJsYXBsYWNpYW5uYiJdXQACLFsyLFsiMDE4NmFlNGEtZDU3Zi00NGY1LWJhZTEtZWJhOTgwNzdlZDc1Il1dAAAGIEi0TXsH8htF5P2HgdXO-N66z08IdmH-WpGZLgt7gY9s
-        run: python3 -m twine upload --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
+        run: python3 -m twine upload --verbose --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
       
       # Step 3: Validate after publishing to TestPyPI
       - name: Install from TestPyPI
