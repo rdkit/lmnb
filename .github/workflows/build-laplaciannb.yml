@@ -28,9 +28,9 @@ jobs:
       - name: Install pdm
         run: python3 -m pip install --upgrade pip pdm
 
-      # Step 4: Install Twine
-      - name: Install Twine
-        run: python3 -m pip install --upgrade pip pdm
+      # Step 4: Install Twine in pdm's Virtual Environment
+      - name: Install Twine in PDM Environment
+        run: python3 -m pip install --upgrade twine
 
       # Step 5: Build a binary wheel and a source tarball
       - name: Build a binary wheel and a source tarball
