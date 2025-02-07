@@ -64,8 +64,10 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-
-      # Step 2: Publish distribution 📦 to PyPI
+      # Step 2: Install Twine
+      - name: Install Twine
+        run: python3 -m pip install --upgrade twine
+      # Step 3: Publish distribution 📦 to PyPI
       - name: Publish distribution 📦 to PyPI
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
@@ -88,8 +90,10 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-      
-      # Step 2: Publish distribution 📦 to TestPyPI
+      # Step 2: Install Twine
+      - name: Install Twine
+        run: python3 -m pip install --upgrade twine
+      # Step 3: Publish distribution 📦 to TestPyPI
       - name: Publish distribution 📦 to TestPyPI
         env:
           TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
