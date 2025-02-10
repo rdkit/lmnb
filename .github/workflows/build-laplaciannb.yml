@@ -18,27 +18,46 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      # Step 2: Set up Miniconda
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: "3.x"
-      
-      # Step 3: Install pdm
-      - name: Install pdm
-        run: python3 -m pip install --upgrade pip pdm
+          activate-environment: buildenv
+          auto-activate--base: false
 
-      # Step 4: Install Twine in pdm's Virtual Environment
-      - name: Install Twine in PDM Environment
-        run: python3 -m pip install --upgrade twine
+      # Step 3: Install RDKit (conda-forge) and Python
+      - name: Install RDKit and Python
+        shell: bash
+        run: |
+          conda install -c conda-forge python=3.9 rdkit
+      
+      # Step 4: Install build tools(pip, pdm)
+      - name: Install build tools
+        shell: bash
+        run: |
+          conda activate buildenv
+          python3 -m pip install --upgrade pip pdm
+
+      # Step 4: Install Twine
+      - name: Install Twine
+        shell: bash
+        run: |
+          conda activate buildenv
+          python3 -m pip install --upgrade twine
 
       # Step 5: Build a binary wheel and a source tarball
       - name: Build a binary wheel and a source tarball
-        run: pdm build
+        shell: bash
+        run: |
+          conda activate buildenv
+          pdm build
 
       # Step 6: Validate the distribution
       - name: Validate the distribution
-        run: python3 -m twine check dist/*
+        shell: bash
+        run: |
+          conda activate buildenv
+          python3 -m twine check dist/*
 
       # Step 7: Store the distribution artifacts for later use
       - name: Store the distribution artifacts
@@ -64,15 +83,31 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-      # Step 2: Install Twine
-      - name: Install Twine
-        run: python3 -m pip install --upgrade twine
-      # Step 3: Publish distribution 📦 to PyPI
+
+      # Step 2: Set up Miniconda
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: pypienv
+          auto-activate--base: false
+
+      # Step 3: Install Twine & RDKit
+      - name: Install Twine & RDKit
+        shell: bash
+        run: |
+          conda activate pypienv
+          conda install -c conda-forge python=3.9 rdkit
+          python3 -m pip install --upgrade twine
+
+      # Step 4: Publish distribution 📦 to PyPI
       - name: Publish distribution 📦 to PyPI
+        shell: bash
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: python3 -m twine upload --non-interactive --repository-url https://upload.pypi.org/legacy/ dist/*
+        run: |
+          conda activate pypienv
+          python3 -m twine upload --non-interactive --repository-url https://upload.pypi.org/legacy/ dist/*
   
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
@@ -91,19 +126,39 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-      # Step 2: Install Twine
-      - name: Install Twine
-        run: python3 -m pip install --upgrade twine
-      # Step 3: Publish distribution 📦 to TestPyPI
+
+      # Step 2: Set up Miniconda
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: testenv
+          auto-activate--base: false
+
+      # Step 3: Install Twine & RDKit
+      - name: Install Twine & RDKit
+        shell: bash
+        run: |
+          conda activate testenv
+          conda install -c conda-forge python=3.9 rdkit
+          python3 -m pip install --upgrade twine
+
+      # Step 4: Publish distribution 📦 to TestPyPI
       - name: Publish distribution 📦 to TestPyPI
+        shell: bash
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: pypi-AgENdGVzdC5weXBpLm9yZwIkNDA5YTI4NjAtMGQ2Ni00MDhjLWIyNTEtZjE0MGMwOTZkNjEzAAITWzEsWyJsYXBsYWNpYW5uYiJdXQACLFsyLFsiMDE4NmFlNGEtZDU3Zi00NGY1LWJhZTEtZWJhOTgwNzdlZDc1Il1dAAAGIEi0TXsH8htF5P2HgdXO-N66z08IdmH-WpGZLgt7gY9s
-        run: python3 -m twine upload --verbose --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
+        run: |
+          conda activate testenv
+          python3 -m twine upload --verbose --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
       
-      # Step 3: Validate after publishing to TestPyPI
+      # Step 5: Validate after publishing to TestPyPI
       - name: Install from TestPyPI
-        run: python3 -m pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.3
+        shell: bash
+        run: |
+          conda activate testenv
+          python3 -m pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.4
+          python3 -c "import laplaciannb; print('laplaciannb installed OK from TestPyPi!')"
   
   github-release:
     name: Create a GitHub release
@@ -131,7 +186,7 @@ jobs:
           name: Release ${{ github.ref_name }}
           body: |
             ## Chnages in this Release
-            - This is the automatically generated release notes.
+            - This is the automatically generated release notes for ${{ github.ref_name }}.
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }} # Set to true for beta releases
       
