@@ -12,6 +12,9 @@ jobs:
   build:
     name: Build distribution 📦
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
     steps:
       # Step 1: Checkout the repository
@@ -22,42 +25,37 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: buildenv
+          activate-environment: base
           auto-activate--base: false
 
-      # Step 3: Install RDKit (conda-forge) and Python
-      - name: Install RDKit and Python
-        shell: bash
+      # Step 3: Create and activate a new environment called "buildenv"
+      - name: Create & activate Build Env
         run: |
-          conda install -c conda-forge python=3.9 rdkit
+          eval "$(conda shell.bash hook)"
+          conda create -y -n buildenv python=3.9 rdkit -c conda-forge
+          conda activate buildenv
       
-      # Step 4: Install build tools(pip, pdm)
+      # Step 4: Install build tools(pip, pdm, twine)
       - name: Install build tools
-        shell: bash
         run: |
+          eval "$(conda shell.bash hook)"
           conda activate buildenv
-          python3 -m pip install --upgrade pip pdm
-
-      # Step 4: Install Twine
-      - name: Install Twine
-        shell: bash
-        run: |
-          conda activate buildenv
-          python3 -m pip install --upgrade twine
+          pip install --upgrade pip 
+          pip install pdm twine
 
       # Step 5: Build a binary wheel and a source tarball
       - name: Build a binary wheel and a source tarball
-        shell: bash
         run: |
+          eval "$(conda shell.bash hook)"
           conda activate buildenv
           pdm build
 
       # Step 6: Validate the distribution
       - name: Validate the distribution
-        shell: bash
         run: |
+          eval "$(conda shell.bash hook)"
           conda activate buildenv
-          python3 -m twine check dist/*
+          twine check dist/*
 
       # Step 7: Store the distribution artifacts for later use
       - name: Store the distribution artifacts
@@ -71,6 +69,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: "! contains(github.ref_name, '-')" # Only run for stable tags (no '-' in tag name)
+    defaults:
+      run:
+        shell: bash
     environment:
       name: pypi
       url: https://pypi.org/project/laplaciannb/
@@ -88,16 +89,17 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: pypienv
+          activate-environment: base
           auto-activate--base: false
 
-      # Step 3: Install Twine & RDKit
-      - name: Install Twine & RDKit
-        shell: bash
+      # Step 3: Create and activate a new environment called "pypienv"
+      - name: Create & activate PyPi Env
         run: |
+          eval "$(conda shell.bash hook)"
+          conda create -y -n pypienv python=3.9 rdkit -c conda-forge
           conda activate pypienv
-          conda install -c conda-forge python=3.9 rdkit
-          python3 -m pip install --upgrade twine
+          pip install --upgrade pip 
+          pip install twine
 
       # Step 4: Publish distribution 📦 to PyPI
       - name: Publish distribution 📦 to PyPI
@@ -106,14 +108,18 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
+          eval "$(conda shell.bash hook)"
           conda activate pypienv
-          python3 -m twine upload --non-interactive --repository-url https://upload.pypi.org/legacy/ dist/*
+          twine upload --non-interactive --repository-url https://upload.pypi.org/legacy/ dist/*
   
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
     needs: build
     runs-on: ubuntu-latest
     if: contains(github.ref_name, '-') # Only run for beta tags (contains '-' in tag name)
+    defaults:
+      run:
+        shell: bash
     environment:
       name: testpypi
       url: https://test.pypi.org/project/laplaciannb/
@@ -131,33 +137,34 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: testenv
+          activate-environment: base
           auto-activate--base: false
 
-      # Step 3: Install Twine & RDKit
-      - name: Install Twine & RDKit
-        shell: bash
+      # Step 3: Create and activate a new environment called "testenv"
+      - name: Create & activate Test Env
         run: |
+          eval "$(conda shell.bash hook)"
+          conda create -y -n testenv python=3.9 rdkit -c conda-forge
           conda activate testenv
-          conda install -c conda-forge python=3.9 rdkit
-          python3 -m pip install --upgrade twine
+          pip install --upgrade pip 
+          pip install twine
 
       # Step 4: Publish distribution 📦 to TestPyPI
       - name: Publish distribution 📦 to TestPyPI
-        shell: bash
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: pypi-AgENdGVzdC5weXBpLm9yZwIkNDA5YTI4NjAtMGQ2Ni00MDhjLWIyNTEtZjE0MGMwOTZkNjEzAAITWzEsWyJsYXBsYWNpYW5uYiJdXQACLFsyLFsiMDE4NmFlNGEtZDU3Zi00NGY1LWJhZTEtZWJhOTgwNzdlZDc1Il1dAAAGIEi0TXsH8htF5P2HgdXO-N66z08IdmH-WpGZLgt7gY9s
         run: |
+          eval "$(conda shell.bash hook)"
           conda activate testenv
-          python3 -m twine upload --verbose --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
+          twine upload --verbose --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
       
       # Step 5: Validate after publishing to TestPyPI
       - name: Install from TestPyPI
-        shell: bash
         run: |
+          eval "$(conda shell.bash hook)"
           conda activate testenv
-          python3 -m pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.4
+          pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.4
           python3 -c "import laplaciannb; print('laplaciannb installed OK from TestPyPi!')"
   
   github-release:
