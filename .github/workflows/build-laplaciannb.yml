@@ -103,7 +103,7 @@ jobs:
       
       # Step 3: Validate after publishing to TestPyPI
       - name: Install from TestPyPI
-        run: python3 -m pip install --index-url https://test.pypi.org/simple/ laplaciannb
+        run: python3 -m pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.3
   
   github-release:
     name: Create a GitHub release
