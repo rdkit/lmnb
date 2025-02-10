@@ -25,8 +25,7 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: base
-          auto-activate--base: false
+          auto-activate-base: false
 
       # Step 3: Create and activate a new environment called "buildenv"
       - name: Create & activate Build Env
@@ -89,8 +88,7 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: base
-          auto-activate--base: false
+          auto-activate-base: false
 
       # Step 3: Create and activate a new environment called "pypienv"
       - name: Create & activate PyPi Env
@@ -103,7 +101,6 @@ jobs:
 
       # Step 4: Publish distribution 📦 to PyPI
       - name: Publish distribution 📦 to PyPI
-        shell: bash
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
@@ -137,8 +134,7 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          activate-environment: base
-          auto-activate--base: false
+          auto-activate-base: false
 
       # Step 3: Create and activate a new environment called "testenv"
       - name: Create & activate Test Env
