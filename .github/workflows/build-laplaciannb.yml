@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: python-package-distributions
-          path: dist/
+          path: dist/*
 
   publish-to-pypi:
     name: Publish Python 🐍 distribution 📦 to PyPI
@@ -82,7 +82,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-package-distributions
-          path: dist/
+          path: dist
 
       # Step 2: Set up Miniconda
       - name: Set up Conda
@@ -128,7 +128,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-package-distributions
-          path: dist/
+          path: dist
 
       # Step 2: Set up Miniconda
       - name: Set up Conda
@@ -160,7 +160,7 @@ jobs:
         run: |
           eval "$(conda shell.bash hook)"
           conda activate testenv
-          pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.8
+          pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.9
           python3 -c "import laplaciannb; print('laplaciannb installed OK from TestPyPi!')"
   
   github-release:
@@ -182,7 +182,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-package-distributions
-          path: dist/
+          path: dist
       # Step 3: Debug dist files
       - name: Debug dist files
         run: |
@@ -206,6 +206,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: .
+          asset_path: dist/*
           asset_name: $(basename $file)
           asset_content_type: application/octet-stream
