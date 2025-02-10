@@ -184,6 +184,7 @@ jobs:
       # Step 3: Create a GitHub release
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
+        id: create_release
         with:
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
