@@ -149,7 +149,7 @@ jobs:
       - name: Publish distribution 📦 to TestPyPI
         env:
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: pypi-AgENdGVzdC5weXBpLm9yZwIkNDA5YTI4NjAtMGQ2Ni00MDhjLWIyNTEtZjE0MGMwOTZkNjEzAAITWzEsWyJsYXBsYWNpYW5uYiJdXQACLFsyLFsiMDE4NmFlNGEtZDU3Zi00NGY1LWJhZTEtZWJhOTgwNzdlZDc1Il1dAAAGIEi0TXsH8htF5P2HgdXO-N66z08IdmH-WpGZLgt7gY9s
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
         run: |
           eval "$(conda shell.bash hook)"
           conda activate testenv
@@ -160,7 +160,7 @@ jobs:
         run: |
           eval "$(conda shell.bash hook)"
           conda activate testenv
-          pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.6.9
+          pip install --index-url https://test.pypi.org/simple/ laplaciannb==0.7.0
           python3 -c "import laplaciannb; print('laplaciannb installed OK from TestPyPi!')"
   
   github-release:
@@ -196,16 +196,26 @@ jobs:
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           body: |
-            ## Chnages in this Release
+            ## Changes in this Release
             - This is the automatically generated release notes for ${{ github.ref_name }}.
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }} # Set to true for beta releases
       
       # Step 5: Attach the distribution artifacts to the GitHub release
       - name: Attach the distribution artifacts to the GitHub release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/*
-          asset_name: $(basename $file)
-          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Listing dist files before upload:"
+          ls -l dist
+          UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
+          for file in dist/*; do
+            echo "Uploading $file..."
+            asset_name=$(basename "$file")
+            echo "Asset name: $asset_name"
+            curl --data-binary @"$file" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/octet-stream" \
+              "${UPLOAD_URL}?name=$asset_name"
+            echo "✅ Uploaded: $asset_name"
+          done
