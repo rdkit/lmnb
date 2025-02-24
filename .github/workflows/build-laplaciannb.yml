@@ -155,15 +155,22 @@ jobs:
           conda activate testenv
           twine upload --verbose --non-interactive --repository-url https://test.pypi.org/legacy/ dist/*
       
-      # Step 5: Validate after publishing to TestPyPI
+      # Step 5: Check Python version
+      - name: Check Python version
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda activate testenv
+          python --version
+      
+      # Step 6: Validate after publishing to TestPyPI
       - name: Install from TestPyPI
         run: |
           eval "$(conda shell.bash hook)"
           conda activate testenv
           pip cache purge
-          pip uninstall -y laplaciannb
+          pip uninstall -y laplaciannb || true
           pip install --no-cache-dir --index-url https://test.pypi.org/simple/ scipy>=1.6.0 || pip install --no-cache-dir scipy>=1.6.0
-          pip install --no-cache-dir --index-url https://test.pypi.org/simple/ --extra-index-url https://test.pypi.org/simple/ laplaciannb==0.8.2
+          pip install --no-cache-dir --index-url https://test.pypi.org/simple/ --extra-index-url https://test.pypi.org/simple/ laplaciannb==0.8.3
           python3 -c "import laplaciannb; print('laplaciannb installed OK from TestPyPi!')"
   
   github-release:
