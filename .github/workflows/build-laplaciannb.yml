@@ -163,7 +163,7 @@ jobs:
           pip cache purge
           pip uninstall -y laplaciannb
           pip install --no-cache-dir --index-url https://test.pypi.org/simple/ scipy>=1.6.0 || pip install --no-cache-dir scipy>=1.6.0
-          pip install --no-cache-dir --index-url https://test.pypi.org/simple/ laplaciannb==0.8.1
+          pip install --no-cache-dir --index-url https://test.pypi.org/simple/ --extra-index-url https://test.pypi.org/simple/ laplaciannb==0.8.2
           python3 -c "import laplaciannb; print('laplaciannb installed OK from TestPyPi!')"
   
   github-release:
