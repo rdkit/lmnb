@@ -64,7 +64,7 @@ jobs:
           path: dist/*
 
   publish-to-pypi:
-    name: Publish Python 🐍 distribution 📦 to PyPI
+    name: Publish Python distribution to PyPI
     needs: build
     runs-on: ubuntu-latest
     if: "! contains(github.ref_name, '-')" # Only run for stable tags (no '-' in tag name)
@@ -99,8 +99,8 @@ jobs:
           pip install --upgrade pip 
           pip install twine
 
-      # Step 4: Publish distribution 📦 to PyPI
-      - name: Publish distribution 📦 to PyPI
+      # Step 4: Publish distribution to PyPI
+      - name: Publish distribution to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
           twine upload --non-interactive --repository-url https://upload.pypi.org/legacy/ dist/*
   
   publish-to-testpypi:
-    name: Publish Python 🐍 distribution 📦 to TestPyPI
+    name: Publish Python distribution to TestPyPI
     needs: build
     runs-on: ubuntu-latest
     if: contains(github.ref_name, '-') # Only run for beta tags (contains '-' in tag name)
@@ -145,8 +145,8 @@ jobs:
           pip install --upgrade pip 
           pip install twine
 
-      # Step 4: Publish distribution 📦 to TestPyPI
-      - name: Publish distribution 📦 to TestPyPI
+      # Step 4: Publish distribution to TestPyPI
+      - name: Publish distribution to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
